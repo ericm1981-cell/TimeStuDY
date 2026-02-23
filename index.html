@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#0b0c10">
+<title>TimeStuDY</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0c10;--s1:#13151c;--s2:#1a1d27;--s3:#22263200;
+  --br:#252932;--br2:#33394a;
+  --gold:#f0a500;--gold2:#ffc23a;--gdim:rgba(240,165,0,.11);
+  --grn:#2ecc71;--red:#e74c3c;--blu:#4a9eff;
+  --txt:#e2e4ef;--muted:#6b738f;--muted2:#404660;
+  --mono:'DM Mono',monospace;--head:'Syne',sans-serif;--body:'DM Sans',sans-serif;
+  --r:8px;--r2:12px;--r3:18px;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--txt);font-family:var(--body);
+  height:100%;overflow:hidden;position:fixed;width:100%;-webkit-font-smoothing:antialiased}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden}
+.scr.off{display:none!important}
+
+/* ══ WELCOME ══ */
+#W{background:var(--bg);align-items:center;justify-content:center;padding:28px 24px}
+.logo{font-family:var(--head);font-size:52px;font-weight:800;letter-spacing:-1px;
+  color:var(--txt);line-height:1;margin-bottom:4px}
+.logo em{color:var(--gold);font-style:normal}
+.sub{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:4px;
+  text-transform:uppercase;margin-bottom:34px}
+.wcards{width:100%;max-width:380px;margin-bottom:28px;display:flex;flex-direction:column;gap:9px}
+.wc{display:flex;align-items:flex-start;gap:13px;background:var(--s1);border:1px solid var(--br);
+  border-radius:var(--r2);padding:13px 15px}
+.wc-n{width:25px;height:25px;border-radius:6px;background:var(--gold);color:#000;
+  font-family:var(--mono);font-size:12px;font-weight:500;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;margin-top:1px}
+.wc-t{font-size:13px;line-height:1.65;color:var(--txt)}
+.wc-t b{color:var(--gold)}
+.cta{width:100%;max-width:380px;background:var(--gold);color:#000;font-family:var(--head);
+  font-size:18px;font-weight:700;letter-spacing:.5px;padding:17px;border:none;
+  border-radius:var(--r2);cursor:pointer;-webkit-appearance:none}
+.cta:active{filter:brightness(.88)}
+
+/* ══ SETUP ══ */
+#ST{background:var(--bg)}
+.tbar{background:var(--s1);border-bottom:1px solid var(--br);
+  padding:13px 18px;padding-top:calc(13px + var(--st));
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.tbar-t{font-family:var(--head);font-size:15px;font-weight:700;color:var(--gold)}
+.tbar-lnk{font-family:var(--mono);font-size:11px;color:var(--muted);
+  background:none;border:none;cursor:pointer;padding:4px 8px}
+.scroll{flex:1;overflow-y:auto;padding:16px 18px;-webkit-overflow-scrolling:touch}
+.foot{padding:13px 18px;padding-bottom:calc(16px + var(--sb));flex-shrink:0}
+.slbl{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;
+  letter-spacing:2px;border-bottom:1px solid var(--br);padding-bottom:5px;
+  margin:18px 0 12px}
+.slbl:first-child{margin-top:0}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:4px}
+.tbtn{background:var(--s2);border:2px solid var(--br);border-radius:var(--r2);
+  padding:15px 7px 13px;text-align:center;cursor:pointer;-webkit-appearance:none;
+  display:flex;flex-direction:column;align-items:center;gap:7px;transition:all .13s}
+.tbtn .ico{font-size:22px}
+.tbtn .lbl{font-family:var(--mono);font-size:9px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.5px;line-height:1.4}
+.tbtn.sel{border-color:var(--gold);background:var(--gdim)}
+.tbtn.sel .lbl{color:var(--gold)}
+.tbtn:active{transform:scale(.96)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-family:var(--mono);font-size:9px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px}
+.fg input,.fg select{width:100%;background:var(--s2);border:1px solid var(--br);
+  border-radius:var(--r);color:var(--txt);font-family:var(--body);font-size:16px;
+  padding:11px 12px;-webkit-appearance:none;transition:border-color .12s}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--gold)}
+.fg input.err{border-color:var(--red)!important}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font-family:var(--mono);font-size:10px;color:var(--muted);background:var(--s2);
+  border:1px solid var(--br);border-radius:20px;padding:7px 12px;cursor:pointer;
+  display:flex;align-items:center;gap:6px;-webkit-appearance:none;user-select:none;transition:all .12s}
+.chip .dot{width:7px;height:7px;border-radius:50%;background:var(--br2);flex-shrink:0}
+.chip.on{border-color:var(--gold);color:var(--gold);background:var(--gdim)}
+.chip.on .dot{background:var(--gold)}
+
+/* ══ APP ══ */
+#A{background:var(--bg)}
+.abar{background:var(--s1);border-bottom:1px solid var(--br);
+  padding:9px 13px;padding-top:calc(9px + var(--st));
+  display:flex;align-items:center;gap:9px;flex-shrink:0}
+.alogo{font-family:var(--head);font-size:17px;font-weight:800;color:var(--txt);flex-shrink:0}
+.alogo em{color:var(--gold);font-style:normal}
+.amid{flex:1;min-width:0;text-align:center}
+.atype{font-family:var(--mono);font-size:9px;color:var(--gold);letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:1px}
+.ainfo{font-family:var(--mono);font-size:10px;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;gap:5px}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--br2);flex-shrink:0}
+.sdot.live{background:var(--red);animation:blink .9s infinite}
+.sdot.hold{background:var(--gold)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.atimer{font-family:var(--mono);font-size:20px;color:var(--gold);letter-spacing:.5px;
+  background:var(--gdim);border:1px solid rgba(240,165,0,.22);border-radius:6px;
+  padding:5px 10px;flex-shrink:0;min-width:82px;text-align:center}
+
+/* Video */
+.vzone{background:#000;flex-shrink:0}
+#vid{width:100%;max-height:30vh;object-fit:contain;display:none;background:#000}
+.vempty{height:30vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:9px;border-bottom:1px solid var(--br)}
+.vei{font-size:34px;opacity:.18}
+.vet{font-family:var(--head);font-size:15px;font-weight:700;color:var(--muted)}
+.ves{font-family:var(--mono);font-size:9px;color:var(--muted2);text-align:center;line-height:1.8}
+.vpick{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;
+  padding:10px 20px;background:var(--gold);color:#000;border:none;border-radius:var(--r);
+  cursor:pointer;margin-top:4px;-webkit-appearance:none}
+.vpick:active{filter:brightness(.88)}
+.ptrack{height:3px;background:var(--br);flex-shrink:0}
+.pfill{height:100%;background:var(--gold);width:0%;transition:width .1s linear}
+
+/* Controls */
+.ctrl{background:var(--s1);border-bottom:1px solid var(--br);
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:9px 12px;flex-shrink:0}
+.cbtn{font-family:var(--head);font-size:13px;font-weight:700;letter-spacing:.3px;
+  padding:14px 8px;border-radius:var(--r2);border:2px solid transparent;
+  cursor:pointer;-webkit-appearance:none;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  transition:opacity .1s,transform .1s}
+.cbtn:active{opacity:.72;transform:scale(.97)}
+.cbtn:disabled{opacity:.2}
+.c-go{background:var(--gold);color:#000;border-color:var(--gold);grid-column:1/-1}
+.c-step{background:transparent;color:var(--gold);border-color:var(--gold)}
+.c-end{background:transparent;color:var(--red);border-color:var(--red)}
+
+/* Tabs */
+.tabs{display:flex;align-items:center;gap:6px;padding:7px 12px;overflow-x:auto;
+  flex-shrink:0;background:var(--s2);border-bottom:1px solid var(--br)}
+.tabs::-webkit-scrollbar{display:none}
+.ctab{font-family:var(--mono);font-size:10px;padding:5px 12px;border:1px solid var(--br);
+  border-radius:20px;background:transparent;color:var(--muted);white-space:nowrap;
+  cursor:pointer;-webkit-appearance:none;transition:all .12s}
+.ctab.on{border-color:var(--gold);color:var(--gold);background:var(--gdim)}
+.tabadd{font-family:var(--mono);font-size:10px;padding:5px 10px;border:1px dashed var(--br2);
+  border-radius:20px;background:transparent;color:var(--muted);white-space:nowrap;
+  cursor:pointer;-webkit-appearance:none}
+
+/* Steps list */
+.slist{flex:1;overflow-y:auto;padding:10px 12px;-webkit-overflow-scrolling:touch;min-height:0}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100px;gap:8px;color:var(--muted2);font-family:var(--mono);font-size:10px;text-align:center}
+.ei{font-size:24px;opacity:.12}
+
+.scard{background:var(--s2);border:1px solid var(--br);border-radius:var(--r2);
+  padding:11px 12px;margin-bottom:8px;animation:fu .18s ease;cursor:pointer}
+.scard:active{background:var(--s3);border-color:var(--gold)}
+@keyframes fu{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.sc-top{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.sc-num{font-family:var(--mono);font-size:9px;color:var(--gold);
+  background:var(--gdim);border:1px solid rgba(240,165,0,.22);
+  border-radius:4px;padding:2px 7px;flex-shrink:0;letter-spacing:1px}
+.sc-name{font-weight:600;font-size:13px;flex:1;line-height:1.3}
+.sc-del{background:none;border:none;color:var(--muted2);font-size:17px;
+  padding:2px 6px;cursor:pointer}
+.sc-edit{font-size:15px;color:var(--muted);margin-right:6px;pointer-events:none;opacity:.7}
+.sc-del:active{color:var(--red)}
+.sc-times{font-family:var(--mono);font-size:10px;color:var(--muted);
+  display:flex;flex-wrap:wrap;gap:9px;margin-bottom:4px}
+.sc-times b{color:var(--blu);font-weight:400}
+.sc-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.tag{font-family:var(--mono);font-size:9px;border-radius:4px;padding:2px 7px;border:1px solid}
+.t-vcw{color:#2ecc71;border-color:rgba(46,204,113,.35);background:rgba(46,204,113,.08)}
+.t-inc{color:#f0a500;border-color:rgba(240,165,0,.35);background:rgba(240,165,0,.08)}
+.t-wst{color:#e74c3c;border-color:rgba(231,76,60,.35);background:rgba(231,76,60,.08)}
+.t-uns{color:#ff7675;border-color:rgba(255,118,117,.35);background:rgba(255,118,117,.08)}
+.t-dif{color:#a29bfe;border-color:rgba(162,155,254,.35);background:rgba(162,155,254,.08)}
+.t-cyc{color:#74b9ff;border-color:rgba(116,185,255,.35);background:rgba(116,185,255,.08)}
+.t-per{color:#55efc4;border-color:rgba(85,239,196,.35);background:rgba(85,239,196,.08)}
+.t-abn{color:#fdcb6e;border-color:rgba(253,203,110,.35);background:rgba(253,203,110,.08)}
+.sc-detail{font-size:11px;color:var(--muted);line-height:1.6;margin-top:4px}
+.sc-detail strong{color:var(--txt);font-weight:500}
+
+/* Sum + export */
+.sumbar{background:var(--s2);border-top:1px solid var(--br);
+  padding:7px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.sumlbl{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.sumval{font-family:var(--mono);font-size:17px;color:var(--gold)}
+.xbar{background:var(--s1);border-top:1px solid var(--br);
+  display:flex;gap:8px;padding:8px 12px;padding-bottom:calc(10px + var(--sb));flex-shrink:0}
+.xbtn{flex:1;font-family:var(--head);font-size:11px;font-weight:700;letter-spacing:.3px;
+  text-transform:uppercase;padding:11px 6px;border-radius:var(--r);
+  cursor:pointer;-webkit-appearance:none;transition:opacity .12s,transform .1s}
+.xbtn:active{opacity:.75;transform:scale(.97)}
+.xbtn:disabled{opacity:.2}
+.x-grn{background:var(--grn);color:#000;border:none;flex:1.6}
+.x-all{background:transparent;color:var(--blu);border:2px solid var(--blu)}
+.x-csv{background:transparent;color:var(--muted);border:2px solid var(--br2)}
+
+/* ══ CAPTURE SHEET ══ */
+#ov{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);
+  display:none;align-items:flex-end;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#ov.open{display:flex}
+.bsheet{width:100%;background:var(--s1);border-top:2px solid var(--gold);
+  border-radius:20px 20px 0 0;padding:17px 18px;
+  padding-bottom:calc(20px + var(--sb));
+  animation:sup .22s cubic-bezier(.4,0,.2,1);max-height:92vh;overflow-y:auto}
+@keyframes sup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.bgrip{width:36px;height:4px;background:var(--br2);border-radius:2px;margin:0 auto 15px}
+.bhead{font-family:var(--head);font-size:13px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--gold);margin-bottom:13px;
+  display:flex;align-items:center;gap:8px}
+.bhead::before{content:'';width:8px;height:8px;border-radius:50%;
+  background:var(--red);animation:blink .9s infinite;flex-shrink:0}
+.trow{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:15px}
+.tbox{background:var(--bg);border:1px solid var(--br);border-radius:var(--r);padding:8px 10px}
+.tbl{font-family:var(--mono);font-size:9px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.tv{font-family:var(--mono);font-size:16px;color:var(--grn);letter-spacing:.5px}
+.sf{margin-bottom:10px}
+.sf label{display:block;font-family:var(--mono);font-size:9px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+.sf input,.sf textarea,.sf select{width:100%;background:var(--bg);border:1px solid var(--br);
+  border-radius:var(--r);color:var(--txt);font-family:var(--body);font-size:16px;
+  padding:11px 12px;-webkit-appearance:none;resize:none;transition:border-color .12s}
+.sf input:focus,.sf textarea:focus,.sf select:focus{outline:none;border-color:var(--gold)}
+.sf input.err{border-color:var(--red)!important}
+.ssec{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;
+  letter-spacing:2px;border-bottom:1px solid var(--br);padding-bottom:4px;margin:12px 0 8px}
+.cchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.cc{font-family:var(--mono);font-size:10px;border-radius:20px;padding:7px 12px;cursor:pointer;
+  display:flex;align-items:center;gap:6px;border:1px solid var(--br);
+  background:var(--bg);color:var(--muted);-webkit-appearance:none;user-select:none;
+  transition:all .12s}
+.cc .cd{width:7px;height:7px;border-radius:50%;background:var(--br2);flex-shrink:0}
+.cc.on{border-color:var(--ck,var(--gold));color:var(--ck,var(--gold))}
+.cc.on .cd{background:var(--ck,var(--gold))}
+.sacts{display:flex;gap:9px;margin-top:13px}
+.ssave{flex:2;font-family:var(--head);font-size:16px;font-weight:700;padding:15px;
+  background:var(--grn);color:#000;border:none;border-radius:var(--r2);cursor:pointer}
+.ssave:active{filter:brightness(.88)}
+.sdis{flex:1;font-family:var(--head);font-size:13px;font-weight:700;padding:15px;
+  background:transparent;color:var(--muted);border:1px solid var(--br);
+  border-radius:var(--r2);cursor:pointer}
+.sdis:active{background:var(--s2)}
+body{overscroll-behavior:none}
+</style>
+</head>
+<body>
+
+<!-- ══════ WELCOME ══════ -->
+<div class="scr" id="W">
+  <div class="logo">Time<em>STU</em>DY</div>
+  <div class="sub">Industrial Engineering · Time Study</div>
+  <div class="wcards">
+    <div class="wc"><div class="wc-n">1</div><div class="wc-t">Choose study type: <b>3C Work Observation</b>, <b>Job Instruction Sheet</b>, or <b>Job Breakdown Sheet</b></div></div>
+    <div class="wc"><div class="wc-n">2</div><div class="wc-t">Fill in study info. Load your process video from Camera Roll or Files.</div></div>
+    <div class="wc"><div class="wc-n">3</div><div class="wc-t">Tap <b>Start</b>, then <b>Step End</b> after each step. Video pauses — fill in all details for that step.</div></div>
+    <div class="wc"><div class="wc-n">4</div><div class="wc-t">Tap <b>Export .xlsx</b> — a perfectly formatted file matching your <b>official template</b> downloads instantly.</div></div>
+  </div>
+  <button class="cta" id="btnW">Get Started →</button>
+</div>
+
+<!-- ══════ SETUP ══════ -->
+<div class="scr off" id="ST">
+  <div class="tbar">
+    <button class="tbar-lnk" id="btnStBack" style="color:var(--gold);padding-left:0">← Back</button>
+    <div class="tbar-t" style="flex:1;text-align:center">Study Setup</div>
+    <button class="tbar-lnk" id="btnSkip">Skip →</button>
+  </div>
+  <div class="scroll">
+    <div class="slbl">Study Type</div>
+    <div class="tgrid">
+      <button class="tbtn sel" data-t="3c"><span class="ico">📋</span><span class="lbl">3C Work<br>Observation</span></button>
+      <button class="tbtn" data-t="ji"><span class="ico">📄</span><span class="lbl">Job<br>Instruction</span></button>
+      <button class="tbtn" data-t="jb"><span class="ico">🔧</span><span class="lbl">Job<br>Breakdown</span></button>
+    </div>
+    <div class="slbl">Study Information</div>
+    <div class="frow">
+      <div class="fg"><label>Process / Station</label><input id="fProc" type="text" placeholder="e.g. Wrap Station"/></div>
+      <div class="fg"><label>Operator</label><input id="fOp" type="text" placeholder="Name or ID"/></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Department / Area</label><input id="fDept" type="text" placeholder="e.g. Assembly"/></div>
+      <div class="fg"><label>Analyst / Observer</label><input id="fAna" type="text" placeholder="Your name"/></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Team Leader</label><input id="fLead" type="text" placeholder="Name"/></div>
+      <div class="fg"><label>Supervisor</label><input id="fSup" type="text" placeholder="Name"/></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Part # / Description</label><input id="fPart" type="text" placeholder="Part No."/></div>
+      <div class="fg"><label>Date</label><input id="fDate" type="text"/></div>
+    </div>
+    <div id="tiFields">
+      <div class="frow">
+        <div class="fg"><label>Takt Time (secs)</label><input id="fTakt" type="number" placeholder="e.g. 216"/></div>
+        <div class="fg"><label>Target Cycle (secs)</label><input id="fCyc" type="number" placeholder="e.g. 72"/></div>
+      </div>
+      <div class="fg"><label>Required Quantity</label><input id="fQty" type="text" placeholder="e.g. 1 PX/1 SL"/></div>
+    </div>
+    <div id="jbFields" style="display:none">
+      <div class="fg"><label>Tools &amp; Materials</label><input id="fTools" type="text" placeholder="e.g. PTI, Crowbar, Lifting Strap"/></div>
+      <div class="fg"><label>PPE Required</label>
+        <div class="chips" id="ppeChips">
+          <button class="chip" data-p="Safety Boots"><span class="dot"></span>Safety Boots</button>
+          <button class="chip" data-p="Safety Glasses"><span class="dot"></span>Safety Glasses</button>
+          <button class="chip" data-p="Hearing Protection"><span class="dot"></span>Hearing Prot.</button>
+          <button class="chip" data-p="Safety Gloves"><span class="dot"></span>Safety Gloves</button>
+          <button class="chip" data-p="Safety Sleeves"><span class="dot"></span>Safety Sleeves</button>
+          <button class="chip" data-p="Safety Jacket"><span class="dot"></span>Safety Jacket</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><button class="cta" id="btnGo">Start Study →</button></div>
+</div>
+
+<!-- ══════ APP ══════ -->
+<div class="scr off" id="A">
+  <div class="abar">
+    <button id="btnABack" style="background:none;border:none;color:var(--gold);font-family:var(--mono);font-size:12px;cursor:pointer;padding:4px 8px 4px 0;flex-shrink:0">← Setup</button>
+    <div class="alogo" style="flex-shrink:0">T<em>S</em>DY</div>
+    <div class="amid">
+      <div class="atype" id="aTypeLbl">3C WORK OBSERVATION</div>
+      <div class="ainfo"><span class="sdot" id="sdot"></span><span id="aInfoLbl">Cycle 1 · 0 steps</span></div>
+    </div>
+    <div class="atimer" id="timerEl">00:00.0</div>
+  </div>
+  <div class="vzone">
+    <div class="vempty" id="vEmpty">
+      <div class="vei">🎬</div>
+      <div class="vet">Load Process Video</div>
+      <div class="ves">Camera Roll · Files · iCloud Drive</div>
+      <button class="vpick" id="btnPick">Choose Video</button>
+    </div>
+    <video id="vid" playsinline webkit-playsinline preload="metadata"></video>
+  </div>
+  <div class="ptrack"><div class="pfill" id="pFill"></div></div>
+  <div class="ctrl">
+    <button class="cbtn c-go"   id="btnStart" disabled>▶ Start</button>
+    <button class="cbtn c-step" id="btnStep"  disabled>◼ Step End</button>
+    <button class="cbtn c-end"  id="btnEnd"   disabled>◉ End Cycle</button>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="ctab on" data-i="0">Cycle 1</button>
+    <button class="tabadd" id="btnAddCyc">＋ Cycle</button>
+  </div>
+  <div class="slist" id="sList">
+    <div class="empty" id="emptyEl"><div class="ei">⏱</div><div>No steps yet.<br>Load a video and tap Start.</div></div>
+  </div>
+  <div class="sumbar" id="sumBar" style="display:none">
+    <div class="sumlbl" id="sumLbl"></div>
+    <div class="sumval" id="sumVal"></div>
+  </div>
+  <div class="xbar">
+    <button class="xbtn x-grn" id="btnXlsx" disabled>⬇ Export .xlsx</button>
+    <button class="xbtn x-all"  id="btnAll"  disabled>All Cycles</button>
+    <button class="xbtn x-csv"  id="btnCsv"  disabled>CSV</button>
+  </div>
+</div>
+
+<!-- ══════ CAPTURE SHEET ══════ -->
+<div id="ov">
+  <div class="bsheet">
+    <div class="bgrip"></div>
+    <div class="bhead" id="bHead">Step Captured</div>
+    <div class="trow">
+      <div class="tbox"><div class="tbl">Video Start</div><div class="tv" id="tSt">—</div></div>
+      <div class="tbox"><div class="tbl">Video End</div><div class="tv" id="tEn">—</div></div>
+      <div class="tbox"><div class="tbl">Duration</div><div class="tv" id="tDu">—</div></div>
+      <div class="tbox"><div class="tbl">Study Elapsed</div><div class="tv" id="tEl">—</div></div>
+    </div>
+
+    <!-- COMMON: Step name -->
+    <div class="sf"><label id="snLbl">Work Step *</label>
+      <input type="text" id="sName" placeholder="Describe this step" autocomplete="off"/></div>
+
+    <!-- ── 3C FIELDS ── -->
+    <div id="f3c">
+      <div class="sf"><label>ERACS <span style="font-weight:400;font-size:11px;color:var(--muted)">(E=Eliminate, R=Rearrange, A=Add/Subtract, C=Combine, S=Simplify)</span></label>
+        <input type="text" id="cEracs" placeholder="E / R / A / C / S" style="text-transform:uppercase" maxlength="1"/></div>
+      <div class="ssec">Work Content</div>
+      <div class="cchips">
+        <button class="cc" data-k="vcw"        style="--ck:#2ecc71"><span class="cd"></span>Value Creating</button>
+        <button class="cc" data-k="incidental" style="--ck:#f0a500"><span class="cd"></span>Incidental</button>
+        <button class="cc" data-k="waste"      style="--ck:#e74c3c"><span class="cd"></span>Waste</button>
+      </div>
+      <div class="ssec">Characteristics</div>
+      <div class="cchips">
+        <button class="cc" data-k="unsafe"    style="--ck:#ff7675"><span class="cd"></span>Unsafe Work</button>
+        <button class="cc" data-k="difficult" style="--ck:#a29bfe"><span class="cd"></span>Difficult Work</button>
+      </div>
+      <div class="ssec">Category</div>
+      <div class="cchips">
+        <button class="cc" data-k="cyclical" style="--ck:#74b9ff"><span class="cd"></span>Cyclical</button>
+        <button class="cc" data-k="periodic" style="--ck:#55efc4"><span class="cd"></span>Periodic</button>
+        <button class="cc" data-k="abnormal" style="--ck:#fdcb6e"><span class="cd"></span>Abnormal</button>
+      </div>
+      <div class="sf" style="margin-top:10px"><label>Notes (optional)</label>
+        <input type="text" id="cNote3c" placeholder="Any observation about this step"/></div>
+    </div>
+
+    <!-- ── JI FIELDS ── -->
+    <div id="fJI" style="display:none">
+      <div class="ssec">Quality Check</div>
+      <div class="sf"><label>Sampling Method</label>
+        <input type="text" id="jiSamp" placeholder="e.g. 100% Visual, 1st PC, Every 10th"/></div>
+      <div class="sf"><label>Acceptance Criteria</label>
+        <input type="text" id="jiCrit" placeholder="e.g. No voids, flush ±0.5mm, label aligned"/></div>
+      <div class="ssec">Additional Details</div>
+      <div class="sf"><label>Notes / Special Instructions</label>
+        <textarea id="jiNote" rows="2" placeholder="Safety cautions, tips, common errors to avoid…"></textarea></div>
+      <div class="sf"><label>Tools / Materials Used</label>
+        <input type="text" id="jiTools" placeholder="e.g. Torque wrench, adhesive, scanner"/></div>
+    </div>
+
+    <!-- ── JB FIELDS ── -->
+    <div id="fJB" style="display:none">
+      <div class="ssec">Step Breakdown</div>
+      <div class="sf"><label>Important Step — WHAT? *</label>
+        <input type="text" id="jbWhat" placeholder="What major action is performed?"/></div>
+      <div class="sf"><label>Key Points — HOW?</label>
+        <textarea id="jbHow" rows="3" placeholder="How to do it correctly — technique, sequence, feel, sound, position, torque values…"></textarea></div>
+      <div class="sf"><label>Reasons — WHY?</label>
+        <textarea id="jbWhy" rows="2" placeholder="Why this matters — safety, quality, damage prevention, customer impact…"></textarea></div>
+      <div class="sf"><label>Safety Notes</label>
+        <input type="text" id="jbSafe" placeholder="Any specific safety concern for this step"/></div>
+    </div>
+
+    <div class="sacts">
+      <button class="ssave" id="btnSave">✓ Save &amp; Continue</button>
+      <button class="sdis"  id="btnDis">Discard</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fIn" accept="video/*" style="display:none">
+
+<script>
+
+'use strict';
+// ════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════
+const APP={
+  type:'3c', vidReady:false, running:false, frozen:false, editIdx:null,
+  stepStartVT:null, cycleStartVT:null,
+  cycles:[[]], cur:0, pending:null,
+  raf:null, tStart:null, tAccum:0,
+  meta:{}
+};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const p2=n=>String(n).padStart(2,'0');
+const fmtMs=ms=>{const s=ms/1000,m=Math.floor(s/60);return`${p2(m)}:${(s%60).toFixed(1).padStart(4,'0')}`};
+const fmtS=s=>`${(+s).toFixed(2)}s`;
+const mmss=s=>{const m=Math.floor(s/60),sc=Math.floor(s%60);return`${p2(m)}:${p2(sc)}`};
+const msec=s=>+((+s||0).toFixed(1));
+const elapsed=()=>{let ms=APP.tAccum;if(APP.tStart!==null)ms+=performance.now()-APP.tStart;return ms};
+
+// ════════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════════
+const show=id=>document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('off',s.id!==id));
+$('btnW').onclick=()=>show('ST');
+$('btnSkip').onclick=()=>{collectMeta();show('A');applyType()};
+$('btnStBack').onclick=()=>show('W');
+$('btnABack').onclick=()=>{if(APP.running){vid.pause();timerPause();APP.running=false}$('ov').classList.remove('open');dot('');show('ST')};
+$('btnGo').onclick=()=>{collectMeta();show('A');applyType()};
+$('fDate').value=new Date().toLocaleDateString('en-US');
+
+document.querySelectorAll('.tbtn').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.tbtn').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel'); APP.type=b.dataset.t;
+    $('jbFields').style.display=APP.type==='jb'?'block':'none';
+    $('tiFields').style.display=APP.type==='jb'?'none':'block';
+  };
+});
+document.querySelectorAll('#ppeChips .chip').forEach(c=>c.onclick=()=>c.classList.toggle('on'));
+
+function collectMeta(){
+  APP.meta={
+    process:$('fProc').value.trim(),operator:$('fOp').value.trim(),
+    dept:$('fDept').value.trim(),analyst:$('fAna').value.trim(),
+    leader:$('fLead').value.trim(),supervisor:$('fSup').value.trim(),
+    part:$('fPart').value.trim(),date:$('fDate').value.trim()||new Date().toLocaleDateString('en-US'),
+    takt:$('fTakt').value.trim(),cycle:$('fCyc').value.trim(),qty:$('fQty').value.trim(),
+    tools:$('fTools')?.value.trim()||'',
+    ppe:[...$('ppeChips').querySelectorAll('.chip.on')].map(c=>c.dataset.p),
+  };
+}
+
+function applyType(){
+  const labels={'3c':'3C WORK OBSERVATION','ji':'JOB INSTRUCTION SHEET','jb':'JOB BREAKDOWN SHEET'};
+  const snl={'3c':'Work Step *','ji':'Step Description *','jb':'Step Label (optional)'};
+  $('aTypeLbl').textContent=labels[APP.type];
+  $('snLbl').textContent=snl[APP.type];
+  $('f3c').style.display=APP.type==='3c'?'block':'none';
+  $('fJI').style.display=APP.type==='ji'?'block':'none';
+  $('fJB').style.display=APP.type==='jb'?'block':'none';
+}
+
+// ════════════════════════════════════════════════════
+// VIDEO
+// ════════════════════════════════════════════════════
+const vid=$('vid');
+$('btnPick').onclick=()=>$('fIn').click();
+$('fIn').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)loadVid(f)});
+function loadVid(file){
+  if(vid._url){URL.revokeObjectURL(vid._url);vid._url=null}
+  vid.pause();vid.removeAttribute('src');vid.load();
+  const url=URL.createObjectURL(file);vid._url=url;
+  vid.onloadedmetadata=()=>{
+    $('vEmpty').style.display='none';vid.style.display='block';
+    APP.vidReady=true;$('btnStart').disabled=false;vid.onloadedmetadata=null;
+  };
+  vid.onerror=()=>alert('Cannot load video.\nTip: MP4 (H.264) works best on iPhone.');
+  vid.src=url;vid.load();
+}
+vid.addEventListener('timeupdate',()=>{
+  if(vid.duration)$('pFill').style.width=(vid.currentTime/vid.duration*100)+'%';
+});
+
+// ════════════════════════════════════════════════════
+// TIMER
+// ════════════════════════════════════════════════════
+function timerGo(){
+  APP.tStart=performance.now();
+  const tick=()=>{$('timerEl').textContent=fmtMs(elapsed());APP.raf=requestAnimationFrame(tick)};
+  APP.raf=requestAnimationFrame(tick);
+}
+function timerPause(){
+  cancelAnimationFrame(APP.raf);APP.raf=null;
+  if(APP.tStart!==null){APP.tAccum+=performance.now()-APP.tStart;APP.tStart=null}
+}
+function timerReset(){
+  cancelAnimationFrame(APP.raf);APP.raf=null;APP.tAccum=0;APP.tStart=null;
+  $('timerEl').textContent='00:00.0';
+}
+
+// ════════════════════════════════════════════════════
+// CONTROLS
+// ════════════════════════════════════════════════════
+$('btnStart').onclick=doStart;
+$('btnStep').onclick=doStepEnd;
+$('btnEnd').onclick=doEndCycle;
+$('btnSave').onclick=doSave;
+$('btnDis').onclick=doDiscard;
+
+function doStart(){
+  if(APP.running)return;
+  if(APP.cycleStartVT===null)APP.cycleStartVT=vid.currentTime;
+  APP.stepStartVT=vid.currentTime;
+  vid.play().catch(console.warn);
+  timerGo();APP.running=true;
+  $('btnStart').textContent='▶ Running';$('btnStart').disabled=true;
+  $('btnStep').disabled=false;$('btnEnd').disabled=false;
+  dot('live');
+}
+
+function doStepEnd(){
+  if(!APP.running||APP.frozen)return;
+  vid.pause();timerPause();APP.running=false;APP.frozen=true;
+  const endVT=vid.currentTime,dur=Math.max(0,endVT-APP.stepStartVT),el=elapsed()/1000;
+  APP.pending={stepStart:APP.stepStartVT,stepEnd:endVT,duration:dur,elapsed:el};
+  $('tSt').textContent=fmtS(APP.stepStartVT);
+  $('tEn').textContent=fmtS(endVT);
+  $('tDu').textContent=fmtS(dur);
+  $('tEl').textContent=fmtS(el);
+  clearSheet();
+  $('ov').classList.add('open');dot('hold');
+  setTimeout(()=>$('sName').focus(),300);
+}
+
+function clearSheet(){
+  $('sName').value='';$('sName').classList.remove('err');
+  ['cNote3c','jiSamp','jiCrit','jiNote','jiTools','jbWhat','jbSafe'].forEach(id=>{const e=$(id);if(e)e.value=''});
+  ['jbHow','jbWhy'].forEach(id=>{const e=$(id);if(e)e.value=''});
+  // Reset ALL chips: remove active state AND clear checkmark text
+  document.querySelectorAll('.cc').forEach(c=>{
+    c.classList.remove('on');
+    const cd=c.querySelector('.cd');if(cd)cd.textContent='';
+  });
+}
+
+function doSave(){
+  const raw=$('sName').value.trim();
+  const n=APP.cycles[APP.cur].length+1;
+  const name=raw||(APP.type==='jb'?`Step ${n}`:'');
+  if(!name){$('sName').classList.add('err');$('sName').focus();return}
+  $('sName').classList.remove('err');
+  const step={...APP.pending,name};
+  if(APP.type==='3c'){
+    document.querySelectorAll('.cc.on').forEach(c=>step[c.dataset.k]=true);
+    step.eracs=$('cEracs').value.trim().toUpperCase();
+    step.note=$('cNote3c').value.trim();
+  } else if(APP.type==='ji'){
+    step.sampling=$('jiSamp').value.trim();
+    step.criteria=$('jiCrit').value.trim();
+    step.note=$('jiNote').value.trim();
+    step.tools=$('jiTools').value.trim();
+  } else {
+    step.what=$('jbWhat').value.trim()||name;
+    step.how=$('jbHow').value.trim();
+    step.why=$('jbWhy').value.trim();
+    step.safety=$('jbSafe').value.trim();
+  }
+  if(APP.editIdx!=null){
+    // Update existing step (preserve timing)
+    const existing=APP.cycles[APP.cur][APP.editIdx];
+    APP.cycles[APP.cur][APP.editIdx]={...existing,...step,name:step.name};
+    APP.editIdx=null;APP.pending=null;APP.frozen=false;
+    $('ov').classList.remove('open');
+    $('bHead').textContent='Step Captured';
+    dot('');renderSteps();syncX();
+  } else {
+    APP.cycles[APP.cur].push(step);
+    APP.stepStartVT=APP.pending.stepEnd;
+    APP.pending=null;APP.frozen=false;
+    $('ov').classList.remove('open');
+    $('btnStart').textContent='▶ Resume';$('btnStart').disabled=false;$('btnStep').disabled=true;
+    dot('');renderSteps();
+  }
+}
+
+function doDiscard(){
+  $('ov').classList.remove('open');APP.frozen=false;APP.pending=null;
+  if(APP.editIdx!=null){APP.editIdx=null;$('bHead').textContent='Step Captured';}
+  $('btnStart').textContent='▶ Resume';$('btnStart').disabled=false;$('btnStep').disabled=true;
+  dot('');
+}
+// ── Edit existing step ────────────────────────────
+function openEditStep(i){
+  const step=APP.cycles[APP.cur][i];
+  APP.editIdx=i;
+  // Populate overlay with existing step data
+  $('sName').value=step.name||'';
+  applyType();
+  if(APP.type==='3c'){
+    // Reset all chips then activate saved ones
+    document.querySelectorAll('.cc').forEach(c=>{c.classList.remove('on');c.querySelector('.cd').textContent=''});
+    const keys=['vcw','incidental','waste','unsafe','difficult','cyclical','periodic','abnormal'];
+    keys.forEach(k=>{
+      if(step[k]){
+        const btn=document.querySelector(`.cc[data-k="${k}"]`);
+        if(btn){btn.classList.add('on');btn.querySelector('.cd').textContent='✓'}
+      }
+    });
+    $('cEracs').value=step.eracs||'';
+    $('cNote3c').value=step.note||'';
+  } else if(APP.type==='ji'){
+    $('jiSamp').value=step.sampling||'';
+    $('jiCrit').value=step.criteria||'';
+    $('jiNote').value=step.note||'';
+    $('jiTools').value=step.tools||'';
+  } else {
+    $('jbWhat').value=step.what||step.name||'';
+    $('jbHow').value=step.how||'';
+    $('jbWhy').value=step.why||'';
+    $('jbSafe').value=step.safety||'';
+  }
+  // Show timing as read-only
+  const dur=step.duration||0;
+  $('tSt').textContent=step.stepStart!=null?fmtVT(step.stepStart):'—';
+  $('tEn').textContent=step.stepEnd!=null?fmtVT(step.stepEnd):'—';
+  $('tDu').textContent=mmss(dur);
+  $('tEl').textContent='—';
+  $('bHead').textContent=`Edit Step ${i+1}`;
+  $('ov').classList.add('open');
+  APP.frozen=true;
+}
+
+function fmtVT(vt){ const m=Math.floor(vt/60),s=Math.floor(vt%60); return `${m}:${s.toString().padStart(2,'0')}`; }
+
+
+
+function doEndCycle(){
+  if(APP.frozen){doSave();if(APP.frozen)return}
+  if(APP.running){vid.pause();timerPause();APP.running=false}
+  // Only create new cycle if current one has steps
+  if(APP.cycles[APP.cur].length>0){
+    APP.cycles.push([]);
+    APP.cur=APP.cycles.length-1;
+  }
+  APP.cycleStartVT=null;APP.stepStartVT=null;
+  timerReset();
+  $('btnStart').textContent='▶ Start';$('btnStart').disabled=!APP.vidReady;
+  $('btnStep').disabled=true;$('btnEnd').disabled=true;
+  dot('');renderTabs();renderSteps();syncX();
+}
+
+function dot(cls){$('sdot').className='sdot'+(cls?' '+cls:'')}
+document.querySelectorAll('.cc').forEach(c=>c.onclick=()=>{
+  c.classList.toggle('on');
+  const cd=c.querySelector('.cd');if(cd)cd.textContent=c.classList.contains('on')?'✓':'';
+});
+
+// ════════════════════════════════════════════════════
+// CYCLE TABS
+// ════════════════════════════════════════════════════
+$('btnAddCyc').onclick=()=>{APP.cycles.push([]);switchCycle(APP.cycles.length-1)};
+function switchCycle(i){
+  if(APP.running){vid.pause();timerPause();APP.running=false}
+  $('ov').classList.remove('open');
+  APP.frozen=false;APP.pending=null;APP.cur=i;
+  APP.cycleStartVT=null;APP.stepStartVT=null;
+  timerReset();vid.currentTime=0;
+  $('btnStart').textContent='▶ Start';$('btnStart').disabled=!APP.vidReady;
+  $('btnStep').disabled=true;$('btnEnd').disabled=true;
+  dot('');renderTabs();renderSteps();
+}
+function renderTabs(){
+  $('tabs').querySelectorAll('.ctab').forEach(t=>t.remove());
+  const add=$('btnAddCyc');
+  APP.cycles.forEach((_,i)=>{
+    const t=document.createElement('button');
+    t.className='ctab'+(i===APP.cur?' on':'');
+    t.textContent=`Cycle ${i+1}`;t.onclick=()=>switchCycle(i);
+    $('tabs').insertBefore(t,add);
+  });
+}
+
+// ════════════════════════════════════════════════════
+// RENDER STEPS
+// ════════════════════════════════════════════════════
+function renderSteps(){
+  $('sList').querySelectorAll('.scard').forEach(c=>c.remove());
+  const steps=APP.cycles[APP.cur];
+  $('emptyEl').style.display=steps.length?'none':'flex';
+  let total=0;
+  steps.forEach((s,i)=>{
+    total+=s.duration||0;
+    const el=document.createElement('div');el.className='scard';
+    let extra='';
+    // Add tap-to-edit hint subtitle
+    extra+=`<div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono)">tap to edit</div>`;
+    if(APP.type==='3c'){
+      const tmap=[
+        ['vcw','t-vcw','Value Creating'],['incidental','t-inc','Incidental'],
+        ['waste','t-wst','Waste'],['unsafe','t-uns','Unsafe'],
+        ['difficult','t-dif','Difficult'],['cyclical','t-cyc','Cyclical'],
+        ['periodic','t-per','Periodic'],['abnormal','t-abn','Abnormal'],
+      ];
+      const active=tmap.filter(([k])=>s[k]);
+      if(active.length)extra+=`<div class="sc-tags">${active.map(([,c,l])=>`<span class="tag ${c}">${l}</span>`).join('')}</div>`;
+      if(s.note)extra+=`<div class="sc-detail"><strong>Note:</strong> ${esc(s.note)}</div>`;
+    } else if(APP.type==='ji'){
+      const pts=[];
+      if(s.sampling)pts.push(`<strong>QC Sampling:</strong> ${esc(s.sampling)}`);
+      if(s.criteria)pts.push(`<strong>Criteria:</strong> ${esc(s.criteria)}`);
+      if(s.note)pts.push(`<strong>Note:</strong> ${esc(s.note)}`);
+      if(s.tools)pts.push(`<strong>Tools:</strong> ${esc(s.tools)}`);
+      if(pts.length)extra+=`<div class="sc-detail">${pts.join('<br>')}</div>`;
+    } else {
+      const pts=[];
+      if(s.how)pts.push(`<strong>How:</strong> ${esc(s.how)}`);
+      if(s.why)pts.push(`<strong>Why:</strong> ${esc(s.why)}`);
+      if(s.safety)pts.push(`<strong>Safety:</strong> ${esc(s.safety)}`);
+      if(pts.length)extra+=`<div class="sc-detail">${pts.join('<br>')}</div>`;
+    }
+    el.innerHTML=`
+      <div class="sc-top">
+        <span class="sc-num">STEP ${p2(i+1)}</span>
+        <span class="sc-name">${esc(s.name)}</span>
+        <span class="sc-edit">✎</span><button class="sc-del" data-i="${i}">✕</button>
+      </div>
+      <div class="sc-times">
+        <span>Duration: <b>${fmtS(s.duration)}</b></span>
+        <span>Video: <b>${mmss(s.stepStart)}→${mmss(s.stepEnd)}</b></span>
+        <span>Elapsed: <b>${fmtS(s.elapsed)}</b></span>
+      </div>${extra}`;
+    el.querySelector('.sc-del').addEventListener('click',e=>{
+      e.stopPropagation();
+      APP.cycles[APP.cur].splice(i,1);renderSteps();
+    });
+    el.addEventListener('click',()=>{ if(!APP.running&&!APP.frozen) openEditStep(i); });
+    $('sList').appendChild(el);
+  });
+  const n=steps.length;
+  $('aInfoLbl').textContent=`Cycle ${APP.cur+1} · ${n} step${n!==1?'s':''}`;
+  if(n>0){
+    $('sumBar').style.display='flex';
+    $('sumLbl').textContent=`Cycle ${APP.cur+1} · ${n} steps`;
+    $('sumVal').textContent=fmtS(total);
+  } else $('sumBar').style.display='none';
+  syncX();
+}
+function syncX(){
+  const hc=APP.cycles[APP.cur].length>0;
+  const ha=APP.cycles.some(c=>c.length>0);
+  $('btnXlsx').disabled=!hc;$('btnAll').disabled=!ha;$('btnCsv').disabled=!hc;
+}
+
+// ════════════════════════════════════════════════════
+// EXPORT
+// ════════════════════════════════════════════════════
+
+
+
+
+
+// ═══════════════════════════════════════════════════════
+// PURE JS XLSX GENERATOR v5
+// Fixes applied per 6-point audit:
+// 1. escapeXml() on ALL string values including attr values from data
+// 2. inlineStr ONLY — eliminates sharedStrings index alignment bugs
+// 3. Row index starts at 1, colLetter verified, no duplicate cell refs
+// 4. xml:space="preserve" on every <t> element
+// 5. All required ZIP parts present, rels match actual paths
+// 6. validateXlsx() runs before download, throws on bad XML or bad cell refs
+// ═══════════════════════════════════════════════════════
+
+$('btnXlsx').onclick=()=>doXlsx([APP.cur]);
+$('btnAll').onclick=()=>doXlsx(APP.cycles.map((_,i)=>i).filter(i=>APP.cycles[i].length>0));
+$('btnCsv').onclick=()=>doCSV(APP.cycles[APP.cur]);
+
+// ── Style indices ─────────────────────────────────────
+const XS={
+  DEF:0,
+  BLK:1,VCW:2,UNS:3,CAT:4,NUM:5,TXT:6,TTL:7,META:8,
+  VCWD:9,UNSD:10,CATD:11,NCTR:12,
+  JIHDR:13,JIPART:14,
+  JBTITL:15,JBLBL:16,JBVAL:17,JBCHDR:18,JBSUB:19,
+  JBWHITEN:20,JBWHITE:21,JBALTN:22,JBALTD:23,
+  ERACS:24,ERACHDR:25,
+};
+
+const STYLES_XML=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+<fonts count="10">
+<font><sz val="11"/><name val="Calibri"/></font>
+<font><b/><sz val="12"/><color rgb="FF000000"/><name val="Calibri"/></font>
+<font><b/><sz val="12"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>
+<font><b/><sz val="18"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>
+<font><sz val="14"/><name val="Calibri"/></font>
+<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>
+<font><b/><sz val="20"/><color rgb="FF000000"/><name val="Calibri"/></font>
+<font><b/><sz val="11"/><color rgb="FF000000"/><name val="Calibri"/></font>
+<font><i/><sz val="9"/><color rgb="FF333333"/><name val="Calibri"/></font>
+<font><sz val="11"/><color rgb="FF000000"/><name val="Calibri"/></font>
+</fonts>
+<fills count="9">
+<fill><patternFill patternType="none"/></fill>
+<fill><patternFill patternType="gray125"/></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FF000000"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFE2EEDA"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFD9E2F3"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFFFF2CB"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FF262626"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFD9D9D9"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFFFFFFF"/></patternFill></fill>
+</fills>
+<borders count="4">
+<border><left/><right/><top/><bottom/><diagonal/></border>
+<border>
+<left style="thin"><color rgb="FF888888"/></left><right style="thin"><color rgb="FF888888"/></right>
+<top style="thin"><color rgb="FF888888"/></top><bottom style="thin"><color rgb="FF888888"/></bottom>
+<diagonal/>
+</border>
+<border>
+<left style="thin"><color rgb="FF000000"/></left><right style="thin"><color rgb="FF000000"/></right>
+<top style="thin"><color rgb="FF000000"/></top><bottom style="thin"><color rgb="FF000000"/></bottom>
+<diagonal/>
+</border>
+<border>
+<left style="dashDot"><color rgb="FFFF0000"/></left><right style="dashDot"><color rgb="FFFF0000"/></right>
+<top style="dashDot"><color rgb="FFFF0000"/></top><bottom style="dashDot"><color rgb="FFFF0000"/></bottom>
+<diagonal/>
+</border>
+</borders>
+<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+<cellXfs count="26">
+<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"/>
+<xf numFmtId="0" fontId="2" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="1" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="1" fillId="4" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="1" fillId="5" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="4" fillId="0" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0" fillId="0" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="3" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="2" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="1" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="1" fillId="4" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="1" fillId="5" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0" fillId="0" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="5" fillId="6" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="7" fillId="8" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="6" fillId="0" borderId="0" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="7" fillId="8" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="9" fillId="8" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="5" fillId="6" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="8" fillId="7" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="top" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="7" fillId="8" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="9" fillId="8" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="top" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="7" fillId="7" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="9" fillId="7" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="top" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="0" fillId="0" borderId="3" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="1" fillId="0" borderId="3" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+</cellXfs>
+<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
+<dxfs count="0"/>
+<tableStyles count="0" defaultTableStyle="TableStyleMedium2" defaultPivotStyle="PivotStyleLight16"/>
+</styleSheet>`;
+
+// ── Fix 1: escapeXml — used on EVERY string value ────
+// Converts & < > " ' to XML entities
+function escapeXml(s){
+  return String(s??'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&apos;');
+}
+// Keep xe as alias for backward compat in styles/workbook XML
+const xe=escapeXml;
+
+function colLetter(n){
+  let r='';n++;
+  while(n){const m=(n-1)%26;r=String.fromCharCode(65+m)+r;n=Math.floor((n-1)/26);}
+  return r;
+}
+
+// ── Fix 2: inlineStr cell writer ─────────────────────
+// ALL text uses inlineStr — NO sharedStrings, NO index alignment
+// Newlines preserved, xml:space="preserve" on every <t>
+function cellStr(addr,s,style){
+  return `<c r="${addr}" s="${style}" t="inlineStr"><is><t xml:space="preserve">${escapeXml(s)}</t></is></c>`;
+}
+// Number cells: NO t attribute, numeric value only, NaN/Infinity become 0
+function cellNum(addr,v,style){
+  const n=Number(v);
+  const safe=isFinite(n)?n:0;
+  return `<c r="${addr}" s="${style}"><v>${safe}</v></c>`;
+}
+
+// ── Sheet builder ─────────────────────────────────────
+function makeSheetData(fn_populate,colWidths){
+  const cellMap={},merges=[],rh={};
+  // Fix 3: track all cell refs to prevent duplicates
+  const seen=new Set();
+  const c=(r,col,v,s=0,num=false)=>{
+    const key=`${r},${col}`;
+    if(seen.has(key)) return; // skip duplicate
+    seen.add(key);
+    cellMap[key]={v:String(v??''),s,num};
+  };
+  const m=(r1,c1,r2,c2)=>merges.push([r1,c1,r2,c2]);
+  const h=(r,ht)=>{rh[r]=ht;};
+  fn_populate(c,m,h);
+  const cells=Object.entries(cellMap).map(([k,cv])=>{
+    const[r,col]=k.split(',').map(Number);
+    return{r,col,...cv};
+  });
+  return{cells,merges,rh,colWidths};
+}
+
+// ── Fix 5: renderSheetXml with correct structure ─────
+// Element order: sheetPr→dimension→sheetViews→sheetFormatPr→cols→sheetData→mergeCells→pageMargins→pageSetup
+function renderSheetXml(sd){
+  const{cells,merges,rh,colWidths}=sd;
+  let maxR=0,maxC=0;
+  cells.forEach(cv=>{if(cv.r>maxR)maxR=cv.r;if(cv.col>maxC)maxC=cv.col;});
+  const byRow={};
+  cells.forEach(cv=>{(byRow[cv.r]=byRow[cv.r]||[]).push(cv);});
+
+  let xml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  xml+='<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">';
+  xml+='<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>';
+  xml+=`<dimension ref="A1:${colLetter(maxC)}${maxR+1}"/>`;
+  xml+='<sheetViews><sheetView workbookViewId="0"><selection activeCell="A1" sqref="A1"/></sheetView></sheetViews>';
+  xml+='<sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>';
+  if(colWidths&&colWidths.length){
+    xml+='<cols>';
+    colWidths.forEach((w,i)=>{xml+=`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`;});
+    xml+='</cols>';
+  }
+  xml+='<sheetData>';
+  for(let r=0;r<=maxR;r++){
+    const ht=rh[r]||15;
+    const rowCells=(byRow[r]||[]).sort((a,b)=>a.col-b.col);
+    if(rowCells.length||rh[r]!==undefined){
+      xml+=`<row r="${r+1}" ht="${ht}" customHeight="1">`;
+      rowCells.forEach(cv=>{
+        const addr=colLetter(cv.col)+(r+1);
+        // Fix 2: inlineStr for text, no-t for numbers
+        xml+=cv.num ? cellNum(addr,cv.v,cv.s) : cellStr(addr,cv.v,cv.s);
+      });
+      xml+='</row>';
+    }
+  }
+  xml+='</sheetData>';
+  if(merges.length){
+    xml+=`<mergeCells count="${merges.length}">`;
+    merges.forEach(([r1,c1,r2,c2])=>{
+      xml+=`<mergeCell ref="${colLetter(c1)}${r1+1}:${colLetter(c2)}${r2+1}"/>`;
+    });
+    xml+='</mergeCells>';
+  }
+  xml+='<pageMargins left="0.75" right="0.75" top="1" bottom="1" header="0.5" footer="0.5"/>';
+  xml+='<pageSetup paperSize="9" fitToHeight="0" orientation="landscape"/>';
+  xml+='</worksheet>';
+  return xml;
+}
+
+// ── Fix 6: Validation ─────────────────────────────────
+function validateXlsx(sheetXmls,stylesXml){
+  const errors=[];
+  // Check XML is parseable
+  const parser=new DOMParser();
+  const allXmls=[...sheetXmls,stylesXml];
+  allXmls.forEach((xml,i)=>{
+    const doc=parser.parseFromString(xml,'application/xml');
+    const err=doc.querySelector('parsererror');
+    if(err) errors.push(`XML parse error in part ${i}: ${err.textContent.slice(0,100)}`);
+  });
+  // Check cell refs in each sheet
+  sheetXmls.forEach((xml,si)=>{
+    const refs=new Set();
+    const cRefs=xml.matchAll(/<c r="([^"]+)"/g);
+    for(const m of cRefs){
+      if(refs.has(m[1])) errors.push(`Sheet ${si+1}: duplicate cell ref ${m[1]}`);
+      refs.add(m[1]);
+      if(!/^[A-Z]+[0-9]+$/.test(m[1])) errors.push(`Sheet ${si+1}: invalid cell ref ${m[1]}`);
+    }
+    // Check no invalid numeric values
+    const vVals=xml.matchAll(/<c r="[^"]*" s="\d+">\s*<v>([^<]+)<\/v>/g);
+    for(const m of vVals){
+      const n=Number(m[1]);
+      if(!isFinite(n)) errors.push(`Sheet ${si+1}: invalid numeric value "${m[1]}"`);
+    }
+  });
+  return errors;
+}
+
+// ── ZIP builder ───────────────────────────────────────
+function buildZip(files){
+  const enc=new TextEncoder();
+  const parts=[],cd=[];let offset=0;
+  const u32=n=>{const b=new Uint8Array(4);new DataView(b.buffer).setUint32(0,n,true);return b;};
+  const u16=n=>{const b=new Uint8Array(2);new DataView(b.buffer).setUint16(0,n,true);return b;};
+  function crc32(buf){
+    let c=0xFFFFFFFF;
+    const t=new Uint32Array(256);
+    for(let i=0;i<256;i++){let v=i;for(let j=0;j<8;j++)v=v&1?(v>>>1)^0xEDB88320:(v>>>1);t[i]=v;}
+    for(let i=0;i<buf.length;i++)c=t[(c^buf[i])&0xFF]^(c>>>8);
+    return(c^0xFFFFFFFF)>>>0;
+  }
+  for(const f of files){
+    const nb=enc.encode(f.name);
+    const data=f.data instanceof Uint8Array?f.data:enc.encode(f.data);
+    const crc=crc32(data);
+    const lh=new Uint8Array([0x50,0x4B,0x03,0x04,20,0,0,0,0,0,0,0,0,0,...u32(crc),...u32(data.length),...u32(data.length),...u16(nb.length),0,0,...nb]);
+    const cde=new Uint8Array([0x50,0x4B,0x01,0x02,20,0,20,0,0,0,0,0,0,0,0,0,...u32(crc),...u32(data.length),...u32(data.length),...u16(nb.length),0,0,0,0,0,0,0,0,0,0,0,0,...u32(offset),...nb]);
+    parts.push(lh,data);cd.push(cde);
+    offset+=lh.length+data.length;
+  }
+  const cdData=concat(cd);
+  const eocd=new Uint8Array([0x50,0x4B,0x05,0x06,0,0,0,0,...u16(files.length),...u16(files.length),...u32(cdData.length),...u32(offset),0,0]);
+  return concat([...parts,cdData,eocd]);
+}
+function concat(arrays){
+  const total=arrays.reduce((n,a)=>n+a.length,0);
+  const out=new Uint8Array(total);let pos=0;
+  for(const a of arrays){out.set(a,pos);pos+=a.length;}
+  return out;
+}
+
+// ── Fix 5: buildXlsx with all required parts ─────────
+function buildXlsx(sheetDatas,sheetNames){
+  const enc=s=>new TextEncoder().encode(s);
+  const n=sheetDatas.length;
+
+  const THEME_XML=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme"><a:themeElements><a:clrScheme name="Office"><a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1><a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="44546A"/></a:dk2><a:lt2><a:srgbClr val="E7E6E6"/></a:lt2><a:accent1><a:srgbClr val="4472C4"/></a:accent1><a:accent2><a:srgbClr val="ED7D31"/></a:accent2><a:accent3><a:srgbClr val="A5A5A5"/></a:accent3><a:accent4><a:srgbClr val="FFC000"/></a:accent4><a:accent5><a:srgbClr val="5B9BD5"/></a:accent5><a:accent6><a:srgbClr val="70AD47"/></a:accent6><a:hlink><a:srgbClr val="0563C1"/></a:hlink><a:folHlink><a:srgbClr val="954F72"/></a:folHlink></a:clrScheme><a:fontScheme name="Office"><a:majorFont><a:latin typeface="Calibri Light"/><a:ea typeface=""/><a:cs typeface=""/></a:majorFont><a:minorFont><a:latin typeface="Calibri"/><a:ea typeface=""/><a:cs typeface=""/></a:minorFont></a:fontScheme><a:fmtScheme name="Office"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:lumMod val="110000"/><a:satMod val="105000"/><a:tint val="67000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="109000"/><a:tint val="81000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:satMod val="103000"/><a:lumMod val="102000"/><a:tint val="94000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="99000"/><a:satMod val="120000"/><a:shade val="78000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:fillStyleLst><a:lnStyleLst><a:ln w="6350" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="12700" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="19050" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw blurRad="57150" dist="19050" dir="5400000" algn="ctr" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="63000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"><a:tint val="95000"/><a:satMod val="170000"/></a:schemeClr></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="93000"/><a:satMod val="150000"/><a:shade val="98000"/><a:lumMod val="102000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="63000"/><a:satMod val="120000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements><a:objectDefaults/><a:extraClrSchemeLst/></a:theme>`;
+
+  // Fix 5: content-types includes theme; rels reference actual paths
+  const ct=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/><Override PartName="/xl/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/><Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>${sheetDatas.map((_,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')}</Types>`;
+
+  const dr=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
+
+  const wr=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheetDatas.map((_,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('')}<Relationship Id="rId${n+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId${n+2}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/><Relationship Id="rId${n+3}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/></Relationships>`;
+
+  const wb=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${sheetNames.map((nm,i)=>`<sheet name="${escapeXml(nm)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')}</sheets></workbook>`;
+
+  // Minimal sharedStrings (required by rels even when unused with inlineStr)
+  const ssXml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="0" uniqueCount="0"></sst>`;
+
+  // Build and validate sheet XMLs before zipping
+  const sheetXmls=sheetDatas.map(sd=>renderSheetXml(sd));
+  const validationErrors=validateXlsx(sheetXmls,STYLES_XML);
+  if(validationErrors.length){
+    console.error('XLSX validation errors:',validationErrors);
+    alert('Export error: '+validationErrors[0]);
+    return null;
+  }
+
+  return buildZip([
+    {name:'[Content_Types].xml',data:enc(ct)},
+    {name:'_rels/.rels',data:enc(dr)},
+    {name:'xl/workbook.xml',data:enc(wb)},
+    {name:'xl/_rels/workbook.xml.rels',data:enc(wr)},
+    {name:'xl/styles.xml',data:enc(STYLES_XML)},
+    {name:'xl/theme/theme1.xml',data:enc(THEME_XML)},
+    {name:'xl/sharedStrings.xml',data:enc(ssXml)},
+    ...sheetXmls.map((xml,i)=>({name:`xl/worksheets/sheet${i+1}.xml`,data:enc(xml)}))
+  ]);
+}
+
+function dlXlsx(sheetDatas,sheetNames,fname){
+  const bytes=buildXlsx(sheetDatas,sheetNames);
+  if(!bytes)return;
+  const blob=new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.style.display='none';a.href=url;a.download=fname;
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
+}
+
+function doXlsx(idxs){
+  const M=APP.meta;
+  const names={'3c':'3C_Observation','ji':'Job_Instruction','jb':'Job_Breakdown'};
+  const d=(M.date||new Date().toLocaleDateString('en-US')).replace(/\//g,'-');
+  const sds=[],sns=[];
+  idxs.forEach(ci=>{
+    const steps=APP.cycles[ci];if(!steps.length)return;
+    const sn=idxs.length>1?`Cycle ${ci+1}`:'Sheet1';
+    let sd;
+    if(APP.type==='3c')      sd=sheet3C(steps,M);
+    else if(APP.type==='ji') sd=sheetJI(steps,M);
+    else                     sd=sheetJB(steps,M);
+    sds.push(sd);sns.push(sn);
+  });
+  if(!sds.length)return;
+  dlXlsx(sds,sns,`TimeStuDY_${names[APP.type]}_${d}.xlsx`);
+}
+
+// ── 3C Work Observation ──────────────────────────────
+function sheet3C(steps,M){
+  return makeSheetData((c,m,h)=>{
+    const tot=steps.reduce((a,s)=>a+(s.duration||0),0);
+    c(0,0,'3C FRAMEWORK\nWORK OBSERVATION AND IMPROVEMENT SHEET',XS.TTL); m(0,0,0,3);
+    c(0,4,'3C= WORK\nCHARACTERISTIC',XS.UNS); m(0,4,0,5);
+    c(0,6,'3C= WORK\nCONTENT',XS.VCW); m(0,6,0,8);
+    c(0,9,'3C= WORK\nCATAGORIES',XS.CAT);
+    h(0,28);
+    c(1,0,'Step #',XS.BLK); m(1,0,2,0);
+    c(1,1,'Work Steps',XS.BLK); m(1,1,2,1);
+    c(1,2,'Time\n(sec)',XS.BLK); m(1,2,2,2);
+    c(1,3,'ERACS\nE=Eliminate,\nR=Rearrange,\nA=Add/Subtract\nC=Combine, S=Simplify',XS.ERACHDR); m(1,3,2,3);
+    c(1,4,'Unsafe\nWork',XS.UNS); m(1,4,2,4);
+    c(1,5,'Difficult\nWork',XS.UNS); m(1,5,2,5);
+    c(1,6,'Value\nWork',XS.VCW); m(1,6,2,6);
+    c(1,7,'Incidental\nWork',XS.VCW); m(1,7,2,7);
+    c(1,8,'Waste',XS.VCW); m(1,8,2,8);
+    c(1,9,'Work Category\nCyclical,\nPeriodic\nAbnormal',XS.CAT); m(1,9,2,9);
+    h(1,55);h(2,15);
+    c(3,0,`Observer: ${M.analyst||''}`,XS.META); m(3,0,3,1);
+    c(3,2,`Steps: ${steps.length}`,XS.META);
+    c(3,3,`Dept: ${M.dept||''}`,XS.META); m(3,3,3,9);
+    h(3,16);
+    steps.forEach((s,i)=>{
+      const r=4+i;
+      c(r,0,i+1,XS.NUM,true);
+      c(r,1,s.name||'',XS.TXT);
+      c(r,2,+(s.duration||0).toFixed(0),XS.NCTR,true);
+      c(r,3,s.eracs||'',XS.ERACS);
+      c(r,4,s.unsafe?'x':'',XS.UNSD);
+      c(r,5,s.difficult?'x':'',XS.UNSD);
+      c(r,6,s.vcw?'x':'',XS.VCWD);
+      c(r,7,s.incidental?'x':'',XS.VCWD);
+      c(r,8,s.waste?'x':'',XS.VCWD);
+      const cat=s.cyclical?'C':s.periodic?'P':s.abnormal?'A':'';
+      c(r,9,cat,XS.CATD);
+      h(r,35.25);
+    });
+    const sr=4+steps.length;h(sr,7.15);
+    const tr=sr+1;
+    c(tr,0,'(TOTAL EACH COLUMN)\nTotal',XS.CAT); m(tr,0,tr,1);
+    c(tr,2,+(tot).toFixed(0),XS.CAT,true);
+    c(tr,3,'',XS.CAT);
+    [[4,'unsafe'],[5,'difficult'],[6,'vcw'],[7,'incidental'],[8,'waste']].forEach(([col,k])=>{
+      c(tr,col,steps.filter(s=>s[k]).length||0,XS.CAT,true);
+    });
+    c(tr,9,'',XS.CAT);
+    h(tr,23.45);
+  },[7,54,9,22,9,9,9,11,8,16]);
+}
+
+// ── Job Instruction Sheet ────────────────────────────
+function sheetJI(steps,M){
+  return makeSheetData((c,m,h)=>{
+    const tot=steps.reduce((a,s)=>a+(s.duration||0),0);
+    c(0,0,`Job Instruction Sheet\n${M.process||''}`,XS.JIHDR); m(0,0,1,1); h(0,33.6);
+    c(0,2,`Part #: ${M.part||''}`,XS.JIPART); m(0,2,0,3);
+    c(0,4,`Required Quantity:\n${M.qty||''}`,XS.JIHDR); m(0,4,1,4);
+    c(0,5,`Date:\n${M.date||''}`,XS.JIHDR); m(0,5,1,5);
+    c(0,6,`Dept./Location:\n${M.dept||''}`,XS.JIHDR);
+    c(0,7,`Team Leader:\n${M.leader||''}`,XS.JIHDR); m(0,7,1,7);
+    c(0,8,`Supervisor:\n${M.supervisor||''}`,XS.JIHDR); m(0,8,1,8); h(1,32.1);
+    c(1,2,`Part Name: ${M.part||''}`,XS.JIPART); m(1,2,1,3);
+    c(1,6,`Prepared By:\n${M.analyst||''}`,XS.JIHDR);
+    c(2,0,'#',XS.BLK); m(2,0,3,0);
+    c(2,1,'Step',XS.BLK); m(2,1,3,1);
+    c(2,2,'Quality Check',XS.BLK); m(2,2,2,3);
+    c(2,4,'Note',XS.BLK); m(2,4,3,4);
+    c(2,5,'Time',XS.BLK); m(2,5,3,5);
+    c(2,6,`Takt Time\n${M.takt||'-'} secs`,XS.BLK); m(2,6,3,6);
+    c(2,7,`Cycle Time\n${M.cycle||'-'} secs`,XS.BLK); m(2,7,3,7);
+    c(2,8,`STD WIP\n${M.stdwip||''}`,XS.BLK); m(2,8,3,8);
+    c(3,2,'Sampling',XS.BLK); c(3,3,'Criteria',XS.BLK);
+    h(2,18);h(3,30);
+    steps.forEach((s,i)=>{
+      const r=4+i;
+      c(r,0,i+1,XS.NCTR,true);
+      c(r,1,s.name||'',XS.TXT);
+      c(r,2,s.sampling||'',XS.TXT);
+      c(r,3,s.criteria||'',XS.TXT);
+      c(r,4,(s.note||'')+(s.tools?'\nTools: '+s.tools:''),XS.TXT);
+      c(r,5,+(s.duration||0).toFixed(0),XS.NCTR,true);
+      h(r,39.6);
+    });
+    const tr=4+steps.length; h(tr,30);
+    c(tr,5,+(tot).toFixed(0),XS.NCTR,true);
+  },[3.4,49.5,11.2,15.9,22.6,12.2,20.6,10.9,10.4]);
+}
+
+// ── Job Breakdown Sheet ──────────────────────────────
+function sheetJB(steps,M){
+  return makeSheetData((c,m,h)=>{
+    const allPPE=['Safety Boots','Safety Glasses','Hearing Protection','Safety Gloves','Safety Sleeves','Safety Jacket'];
+    const ppe=M.ppe||[];
+    c(0,0,'JOB BREAKDOWN SHEET',XS.JBTITL); m(0,0,0,3); h(0,40);
+    c(1,0,'LINE | WORKSTATION | PROCESS:',XS.JBLBL);
+    c(1,1,M.process||'',XS.JBVAL); m(1,1,1,3); h(1,22);
+    c(2,0,'TOOLS & MATERIALS:',XS.JBLBL);
+    c(2,1,M.tools||'',XS.JBVAL); m(2,1,2,3); h(2,22);
+    c(3,0,'PPE REQUIRED\n(CIRCLE ALL THAT APPLY):',XS.JBLBL);
+    const ppe4=allPPE.slice(0,4).map(p=>ppe.includes(p)?p+' [X]':p).join('     ');
+    c(3,1,ppe4,XS.JBVAL); m(3,1,3,3); h(3,20);
+    c(4,0,'',XS.JBLBL);
+    const ppe2=allPPE.slice(4).map(p=>ppe.includes(p)?p+' [X]':p).join('     ')+'     Other, Describe: '+(M.ppeOther||'');
+    c(4,1,ppe2,XS.JBVAL); m(4,1,4,3); h(4,20);
+    h(5,4);
+    c(6,0,'STEP',XS.JBCHDR);
+    c(6,1,'IMPORTANT STEP | WHAT?',XS.JBCHDR);
+    c(6,2,'KEY POINTS | HOW?',XS.JBCHDR);
+    c(6,3,'REASONS | WHY?',XS.JBCHDR);
+    h(6,22);
+    c(7,0,'',XS.JBSUB);
+    c(7,1,'A logical part of the process when something happens to advance the work',XS.JBSUB);
+    c(7,2,'Anything in the step that might: Make or break the job, injure the worker, and/or make the work easier or more efficient',XS.JBSUB);
+    c(7,3,'Reasons for the key points',XS.JBSUB);
+    h(7,30);
+    steps.forEach((s,i)=>{
+      const r=8+i,alt=i%2===1;
+      const dn=alt?XS.JBALTN:XS.JBWHITEN;
+      const dd=alt?XS.JBALTD:XS.JBWHITE;
+      const howLines=(s.how||'').split('\n').filter(l=>l.trim()).map(l=>l.startsWith('-')||l.startsWith('\u26a0')?l:'- '+l);
+      if(s.safety)howLines.push('- \u26a0 Safety: '+s.safety);
+      const whyLines=(s.why||'').split('\n').filter(l=>l.trim()).map(l=>l.startsWith('-')?l:'- '+l);
+      c(r,0,i+1,dn,true);
+      c(r,1,s.what||s.name||'',dd);
+      c(r,2,howLines.join('\n'),dd);
+      c(r,3,whyLines.join('\n'),dd);
+      h(r,55);
+    });
+    const br=8+steps.length;
+    c(br,0,'',XS.JBCHDR);c(br,1,'',XS.JBCHDR);
+    c(br,2,'',XS.JBCHDR);c(br,3,'',XS.JBCHDR);
+    h(br,6);
+  },[28,28,60,32]);
+}
+
+// ── CSV ──────────────────────────────────────────────
+function doCSV(steps){
+  const M=APP.meta;
+  let rows;
+  if(APP.type==='3c'){
+    rows=[['Step#','Work Step','Time (sec)','ERACS','Unsafe','Difficult','Value Creating','Incidental','Waste','Work Category','Notes']];
+    steps.forEach((s,i)=>{
+      const cat=s.cyclical?'Cyclical':s.periodic?'Periodic':s.abnormal?'Abnormal':'';
+      rows.push([i+1,s.name,+(s.duration||0).toFixed(0),s.eracs||'',s.unsafe?'x':'',s.difficult?'x':'',s.vcw?'x':'',s.incidental?'x':'',s.waste?'x':'',cat,s.note||'']);
+    });
+  } else if(APP.type==='ji'){
+    rows=[['Step#','Step','QC Sampling','QC Criteria','Note','Tools','Time (secs)']];
+    steps.forEach((s,i)=>rows.push([i+1,s.name,s.sampling||'',s.criteria||'',s.note||'',s.tools||'',+(s.duration||0).toFixed(0)]));
+  } else {
+    rows=[['Step#','WHAT','HOW','WHY','Safety']];
+    steps.forEach((s,i)=>rows.push([i+1,s.what||s.name,s.how||'',s.why||'',s.safety||'']));
+  }
+  const csv=rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download=`TimeStuDY_${APP.type.toUpperCase()}_${(M.date||'export').replace(/\//g,'-')}.csv`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+}
+
+document.addEventListener('touchmove',e=>{
+  if(!e.target.closest('.slist,.scroll,.bsheet'))e.preventDefault();
+},{passive:false});
+
+</script>
+</body>
+</html>
